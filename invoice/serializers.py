@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 # base_url = "https://" + settings.ALLOWED_HOSTS[1] + settings.MEDIA_URL
-base_url = "https://" + "invoice.kacc.mn"
+base_url = "http://" + "202.131.237.185:3030"
 # base_url = "http://" + "127.0.0.1:8000"
 
 
