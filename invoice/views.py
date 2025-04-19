@@ -890,7 +890,7 @@ class AdvertisementView(APIView):
                 "version": ad.version,
                 "title": ad.title,
                 "description": ad.description,
-                "image": request.build_absolute_uri(ad.image.url),
+                "image": f"{base_url}{ad.image.url}",
                 "link": ad.link,
             }
         except Advertisement.DoesNotExist:
