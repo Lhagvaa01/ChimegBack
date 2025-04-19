@@ -64,7 +64,13 @@ CACHES = {
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3030",
-    "https://api.chimeg.mn"
+    "https://api.chimeg.mn",
+    "https://www.chimeg.mn",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://api.chimeg.mn",
+    "https://www.chimeg.mn",  # Хэрэв frontend бас эндээс ажиллаж байгаа бол
 ]
 
 MIDDLEWARE = [
