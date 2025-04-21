@@ -427,8 +427,8 @@ class DiscountProductsListView(APIView):
                 f"{base_url}{color_image.image.url}" for color_image in query.color_images.all() if color_image.image
             ]
 
-            if not color_images and query.TCImage1:  # Fallback to TCImage1
-                color_images = [f"{base_url}/media/{query.TCImage1}"]
+            # if not color_images and query.TCImage1:  # Fallback to TCImage1
+            #     color_images = [f"{base_url}/media/{query.TCImage1}"]
 
             # Fetch color variants and hardware specifications
             color_variants = query.get_color_variants()
@@ -823,8 +823,8 @@ class get_SiteProductNew(APIView):
                 f"{base_url}{color_image.image.url}" for color_image in product.color_images.all() if color_image.image
             ]
 
-            if not color_images and product.TCImage1:  # Fallback to TCImage1
-                color_images = [f"{base_url}/media/{product.TCImage1}"]
+            # if not color_images and product.TCImage1:  # Fallback to TCImage1
+            #     color_images = [f"{base_url}/media/{product.TCImage1}"]
 
             # Fetch color variants and hardware specifications
             color_variants = product.get_color_variants()
