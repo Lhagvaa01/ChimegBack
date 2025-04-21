@@ -134,12 +134,58 @@ class PromotionalProduct(models.Model):
         verbose_name_plural =  "WebSite - Урамшуулалын бараа"
 
 
+class MetalRate(models.Model):
+    metal = models.CharField(max_length=20, help_text="Металын нэр")  # "Gold", "Silver"
+    rate = models.DecimalField(max_digits=10, decimal_places=2, help_text="1 граммын үнэ")  # 1 грамм үнэ
+    assay = models.IntegerField(help_text="Сорьц")
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # Эхлээд өөрийг нь хадгална
+
+        # --- MetalRate хадгалагдсаны дараа бүх InfoProduct-уудыг шинэчилнэ ---
+        from invoice.models import InfoProduct  # Импорт заавал дотор нь бич
+        from django.db.models import Q
+
+        # Бүх InfoProduct авах
+        products = InfoProduct.objects.all()
+
+        for product in products:
+            total_price = 0
+
+            for spec in product.hardware_specifications.all():
+                # Металлын нэр, сорьц таарч байгаа эсэхийг шалгах
+                if spec.category.name == self.metal and spec.detail and int(spec.detail) == self.assay:
+                    try:
+                        weight = float(spec.name)
+                    except (ValueError, TypeError):
+                        weight = 0
+
+                    pure_weight = weight
+                    material_price = pure_weight * float(self.rate)
+                    total_price += material_price
+
+            # Хэрэв энэ металлын өөр бусад сорьцтой hardware_specifications байвал хамтад нь бодох
+            for spec in product.hardware_specifications.exclude(Q(category__name=self.metal) & Q(detail=self.assay)):
+                try:
+                    linked_rate = MetalRate.objects.get(metal=spec.category.name, assay=int(spec.detail))
+                    weight = float(spec.name)
+                    pure_weight = weight
+                    material_price = pure_weight * float(self.rate)
+                    total_price += material_price
+                except (MetalRate.DoesNotExist, ValueError, TypeError):
+                    continue
+
+            # TCPrice-г шинэчлэх
+            product.TCPrice = total_price
+            product.save(update_fields=["TCPrice"])
+
+
+
 class InfoProduct(models.Model):
     TCItemCode = models.CharField(help_text='Дотоод код-Санхүүгийн код', max_length=50, unique=True)
     TCItemGroupDTLPK = models.ManyToManyField(GroupDTL)
-    TCIsView = models.BooleanField(default=False, help_text='Kacc.mn сайт дээр харуулах эсэх')
-    # TCItemFactoryCode = models.CharField(max_length=50, null=True, blank=True)
-    # TCHsCode = models.CharField(max_length=50, blank=True, null=True)
+    TCIsView = models.BooleanField(default=False, help_text='Сайт дээр харуулах эсэх')
     TCItemNameMongol = models.CharField(max_length=100, blank=True)
     TCPrice = models.DecimalField(max_digits=50, decimal_places=20, blank=True)
     TCDiscountPrice = models.DecimalField(default=0, max_digits=50, decimal_places=20, blank=True)
@@ -149,27 +195,9 @@ class InfoProduct(models.Model):
         blank=True,
         help_text="Хөнгөлөлт дуусах хугацаа"
     )
-    # TCItemNameEnglish = models.CharField(max_length=100, blank=True, null=True)
-    # TCItemNameChina = models.CharField(max_length=100, blank=True, null=True)
-    # TCItemPadaanName = models.CharField(max_length=100, blank=True, null=True)
-    # TCFactoryWarrantyMonth = models.CharField(max_length=10, blank=True, null=True)
-    # TCShopWarrantyMonth = models.CharField(max_length=10, blank=True, null=True)
-    # TCAccessories = models.CharField(max_length=100, blank=True, null=True)
     TCInvoiceText = HTMLField(default="")
     TCOrderDetailText = HTMLField(default="")
     TCOneBoxQty = models.IntegerField(default=0, blank=True, null=True)
-    # TCOneBoxWeight = models.IntegerField(default=0, blank=True, null=True)
-    # TCOneBoxHeight = models.IntegerField(default=0, blank=True, null=True)
-    # TCOneBoxLength = models.IntegerField(default=1, blank=True)
-    # TCOneBoxNetWeightKg = models.DecimalField(max_digits=50, decimal_places=20, blank=True, null=True)
-    # TCOneBoxGrossWeightKg = models.DecimalField(max_digits=50, decimal_places=20, blank=True, null=True)
-    # TCOneBoxVolumeM3 = models.DecimalField(max_digits=50, decimal_places=20, blank=True, null=True)
-    # TCOneTotalCBM = models.DecimalField(max_digits=50, decimal_places=20, blank=True, null=True)
-    # TCImage1 = models.ImageField(upload_to='products', null=True, blank=True)
-    # TCImage2 = models.ImageField(upload_to='products', null=True, blank=True)
-    # TCImage3 = models.ImageField(upload_to='products', null=True, blank=True)
-    # TCNote1 = models.TextField(null=True, blank=True)
-    # TCUseInstructions = models.CharField(max_length=50, blank=True, null=True)
     TCVideoURL = models.URLField(blank=True, null=True)
     created_at = models.DateTimeField(default=now, editable=False)
 

@@ -253,3 +253,8 @@ class ProgramInfoAdmin(admin.ModelAdmin):
     list_display = ('name', 'contact', 'website_url')
     search_fields = ('name', 'description')
 admin.site.register(ProgramInfo, ProgramInfoAdmin)
+
+class MetalRateAdmin(admin.ModelAdmin):
+    list_display = ('metal', 'rate', 'updated_at')
+    search_fields = ('metal', 'rate')
+admin.site.register(MetalRate, MetalRateAdmin)
