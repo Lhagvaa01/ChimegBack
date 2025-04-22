@@ -867,7 +867,7 @@ class get_SiteProductNew(APIView):
             })
 
         # Store the response in cache for 15 minutes
-        cache.set(cache_key, {"statusCode": "200", "dtl": selected_fields}, timeout=60 * 5)
+        # cache.set(cache_key, {"statusCode": "200", "dtl": selected_fields}, timeout=60 * 5)
 
         return Response({"statusCode": "200", "dtl": selected_fields})
 
