@@ -788,14 +788,14 @@ class get_SiteProductNew(APIView):
 
     def get(self, request, itemCode):
         # Cache key for storing the result
-        cache_key = f"product_data_{itemCode}"
-
-        # Check if data is in cache
-        cached_data = cache.get(cache_key)
-
-        if cached_data:
-            # If data is in cache, return cached response
-            return Response(cached_data)
+        # cache_key = f"product_data_{itemCode}"
+        #
+        # # Check if data is in cache
+        # cached_data = cache.get(cache_key)
+        #
+        # if cached_data:
+        #     # If data is in cache, return cached response
+        #     return Response(cached_data)
 
         # If data is not in cache, fetch it from database
         queryset = InfoProduct.objects.filter(TCIsView=True).select_related('brand').prefetch_related(
@@ -827,7 +827,7 @@ class get_SiteProductNew(APIView):
             #     color_images = [f"{base_url}/media/{product.TCImage1}"]
 
             # Fetch color variants and hardware specifications
-            color_variants = product.get_color_variants()
+            # color_variants = product.get_color_variants()
             hardware_specifications = product.get_hardware_specifications()
             brand_data = BrandSerializer(product.brand).data if product.brand else None
 
@@ -853,7 +853,7 @@ class get_SiteProductNew(APIView):
                     product.TCDiscountEndDate).isoformat() if product.TCDiscountEndDate else None,
                 'imgs': color_images,  # Set list of color variant images
                 'qty': int(product.TCOneBoxQty),
-                'color_variants': color_variants,
+                # 'color_variants': color_variants,
                 'hardware_specifications': hardware_specifications,
                 'brand': brand_data,
                 'promotionalProducts': promotional_products,

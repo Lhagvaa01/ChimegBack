@@ -101,9 +101,7 @@ class InfoProductSerializer(serializers.ModelSerializer):
             'TCItemNameMongol', 'TCPrice', 'TCDiscountPrice', 'TCItemNameEnglish',
             'TCItemNameChina', 'TCHsCode', 'TCInvoiceText', 'TCOrderDetailText',
             'TCFactoryWarrantyMonth', 'TCShopWarrantyMonth', 'TCAccessories',
-            'TCOneBoxQty', 'TCOneBoxWeight', 'TCOneBoxNetWeightKg', 'TCOneBoxGrossWeightKg',
-            'TCOneBoxVolumeM3', 'TCOneTotalCBM', 'TCNote1', 'TCUseInstructions', 'TCVideoURL',
-            'created_at', 'color_variants', 'hardware_specifications', 'brand'  # Correct field name here
+            'TCOneBoxQty', 'TCNote1', 'created_at', 'hardware_specifications', 'brand'  # Correct field name here
         ]
 
 
@@ -115,8 +113,8 @@ class InfoProductSerializer(serializers.ModelSerializer):
         product = InfoProduct.objects.create(**validated_data)
 
         # Create Color instances
-        for color_data in color_variants_data:
-            Color.objects.create(item=product, **color_data)
+        # for color_data in color_variants_data:
+        #     Color.objects.create(item=product, **color_data)
 
         # Create HardwareSpecification instances if needed
         for spec_data in hardware_specifications_data:

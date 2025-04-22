@@ -101,8 +101,8 @@ class Brand(models.Model):
 class HardwareSpecification(models.Model):
     item = models.ForeignKey('InfoProduct', related_name='hardware_specifications', on_delete=models.CASCADE)
     category = models.ForeignKey(HardwareCategory, on_delete=models.CASCADE, related_name='specifications') # ForeignKey to HardwareCategory
-    name = models.CharField(max_length=255)  # e.g., I5-4th
-    detail = models.CharField(max_length=50, blank=True, null=True)# e.g., "3rd", "4th", "12th"
+    name = models.CharField(max_length=255, verbose_name="Грамм")  # e.g., I5-4th
+    detail = models.CharField(max_length=50, blank=True, null=True, verbose_name="Сорьц")# e.g., "3rd", "4th", "12th"
     description = models.CharField(max_length=255, blank=True, null=True)  # Detailed description
 
     def __str__(self):
@@ -232,16 +232,16 @@ class InfoProduct(models.Model):
 
 
 
-    def save(self, *args, **kwargs):
-        # If the object is new (no primary key), save it first to get the primary key
-        if not self.pk:
-            super(InfoProduct, self).save(*args, **kwargs)
-
-        # After saving, aggregate the sum of qty from related colors
-        self.TCOneBoxQty = self.color_variants.aggregate(total_qty=Sum('qty'))['total_qty'] or 0
-
-        # Now save the instance again to store the updated TCOneBoxQty
-        super(InfoProduct, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     # If the object is new (no primary key), save it first to get the primary key
+    #     if not self.pk:
+    #         super(InfoProduct, self).save(*args, **kwargs)
+    #
+    #     # After saving, aggregate the sum of qty from related colors
+    #     self.TCOneBoxQty = self.color_variants.aggregate(total_qty=Sum('qty'))['total_qty'] or 0
+    #
+    #     # Now save the instance again to store the updated TCOneBoxQty
+    #     super(InfoProduct, self).save(*args, **kwargs)
 
     def recalculate_TCOneBoxQty(self):
         """Recalculate TCOneBoxQty based on the sum of qty in related Color instances."""

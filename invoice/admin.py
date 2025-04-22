@@ -231,11 +231,11 @@ class InfoProductAdmin(admin.ModelAdmin):
     )
     search_fields = ('TCItemCode', 'TCItemNameMongol', 'TCItemNameEnglish', 'TCItemNameChina')
     list_filter = ('TCIsView',)
-    inlines = [ColorInline, ColorImageInline, HardwareSpecificationInline, PromotionalProductInline, SparePartInline]
+    inlines = [ColorImageInline, HardwareSpecificationInline, PromotionalProductInline, SparePartInline]
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        return queryset.prefetch_related('color_variants', 'hardware_specifications')
+        return queryset.prefetch_related('hardware_specifications')
 
 admin.site.register(InfoProduct, InfoProductAdmin)
 
