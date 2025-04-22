@@ -165,16 +165,16 @@ class MetalRate(models.Model):
                     material_price = pure_weight * float(self.rate)
                     total_price += material_price
 
-            # Хэрэв энэ металлын өөр бусад сорьцтой hardware_specifications байвал хамтад нь бодох
-            for spec in product.hardware_specifications.exclude(Q(category__name=self.metal) & Q(detail=self.assay)):
-                try:
-                    linked_rate = MetalRate.objects.get(metal=spec.category.name, assay=int(spec.detail))
-                    weight = float(spec.name)
-                    pure_weight = weight
-                    material_price = pure_weight * float(self.rate)
-                    total_price += material_price
-                except (MetalRate.DoesNotExist, ValueError, TypeError):
-                    continue
+            # # Хэрэв энэ металлын өөр бусад сорьцтой hardware_specifications байвал хамтад нь бодох
+            # for spec in product.hardware_specifications.exclude(Q(category__name=self.metal) & Q(detail=self.assay)):
+            #     try:
+            #         linked_rate = MetalRate.objects.get(metal=spec.category.name, assay=int(spec.detail))
+            #         weight = float(spec.name)
+            #         pure_weight = weight
+            #         material_price = pure_weight * float(self.rate)
+            #         total_price += material_price
+            #     except (MetalRate.DoesNotExist, ValueError, TypeError):
+            #         continue
 
             # TCPrice-г шинэчлэх
             product.TCPrice = total_price
